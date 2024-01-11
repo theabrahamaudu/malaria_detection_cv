@@ -1,30 +1,31 @@
-# -*- coding: utf-8 -*-
-import click
-import logging
-from pathlib import Path
-from dotenv import find_dotenv, load_dotenv
+import os
+import cv2
+from tqdm import tqdm
+from src.utils.file_utilities import scan_directory
 
 
-@click.command()
-@click.argument('input_filepath', type=click.Path(exists=True))
-@click.argument('output_filepath', type=click.Path())
-def main(input_filepath, output_filepath):
-    """ Runs data processing scripts to turn raw data from (../raw) into
-        cleaned data ready to be analyzed (saved in ../processed).
-    """
-    logger = logging.getLogger(__name__)
-    logger.info('making final data set from raw data')
+def convert_to_jpg():
+    raw_path = './data/raw/SpeciesDataset/'
+    raw_train_path = 'train/'
+    raw_test_path = 'test/'
+    species = ['Falciparum', 'Malariae', 'Ovale', 'Vivax']
+    interim_path = './data/interim/'
+
+    for split in [raw_train_path, raw_test_path]:
+        for specie in species:
+            os.makedirs(interim_path + specie, exist_ok=True)
+            image_paths = scan_directory(raw_path + split + specie, '.png')
+            for image in tqdm(image_paths,
+                              total=len(image_paths),
+                              desc="Converting %s images to jpg" % specie,
+                              unit="images"):
+                png_img = cv2.imread(raw_path + split + specie + '/' + image)
+                cv2.imwrite(
+                    interim_path + specie + '/' + image[:-4] + '.jpg',
+                    png_img,
+                    [int(cv2.IMWRITE_JPEG_QUALITY), 100]
+                )
 
 
 if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
-
-    # not used in this stub but often useful for finding various files
-    project_dir = Path(__file__).resolve().parents[2]
-
-    # find .env automagically by walking up directories until it's found, then
-    # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
-
-    main()
+    convert_to_jpg()
