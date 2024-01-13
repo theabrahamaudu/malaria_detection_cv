@@ -12,7 +12,9 @@ ipykernel
 # core
 opencv-python
 tensorflow[and-cuda]==2.15.0
+tensorflow_addons
 attention
+keras-self-attention
 tqdm
 scikit-learn
 pandas

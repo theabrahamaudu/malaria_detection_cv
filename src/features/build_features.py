@@ -53,15 +53,24 @@ for specie in species:
         data_reference = pd.concat([data_reference, specie_df])
 
 
-train_df, test_df = train_test_split(
+training_data, test_df = train_test_split(
     data_reference,
     stratify=data_reference['species'],
     test_size=0.2,
     random_state=42
 )
 
+train_df, val_df = train_test_split(
+    training_data,
+    stratify=training_data['species'],
+    test_size=0.2,
+    random_state=42
+)
+
 
 # Create train data generator
+batch_size = 16
+
 train_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
     rescale=1./255,
     shear_range=0.2,
@@ -76,7 +85,25 @@ train_generator = train_datagen.flow_from_dataframe(
     class_mode="categorical",
     target_size=(224, 224),
     save_to_dir=train_path,
-    batch_size=32,
+    batch_size=batch_size,
+    seed=42
+)
+
+val_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
+    rescale=1./255,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True
+)
+val_generator = train_datagen.flow_from_dataframe(
+    dataframe=val_df,
+    directory=None,
+    x_col="image",
+    y_col="species",
+    class_mode="categorical",
+    target_size=(224, 224),
+    save_to_dir=train_path,
+    batch_size=batch_size,
     seed=42
 )
 
@@ -90,6 +117,6 @@ test_generator = test_datagen.flow_from_dataframe(
     class_mode=None,  # type: ignore
     target_size=(224, 224),
     save_to_dir=test_path,
-    batch_size=32,
+    batch_size=batch_size,
     seed=42
 )

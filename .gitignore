@@ -78,6 +78,12 @@ target/
 # exclude data from source control by default
 /data/
 
+# exclude models from source control
+/models/
+
+# exclude MLflow run files
+/mlruns/
+
 # Mac OS-specific storage files
 .DS_Store
 
