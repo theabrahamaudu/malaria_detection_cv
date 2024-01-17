@@ -157,10 +157,19 @@ def makeCategorical(original_df, categorical_y):
 
 def transform_data(array, modify=False):
     if modify:
+        # datagen = tf.keras.preprocessing.image.ImageDataGenerator(
+        #     rescale=1./255,
+        #     shear_range=0.2,
+        #     zoom_range=0.2,
+        #     horizontal_flip=True
+        # )
         datagen = tf.keras.preprocessing.image.ImageDataGenerator(
             rescale=1./255,
-            shear_range=0.2,
-            zoom_range=0.2,
+            shear_range=0.1,  # Reduced shear range
+            zoom_range=0.1,   # Reduced zoom range
+            rotation_range=10,  # Reduced rotation range
+            width_shift_range=0.1,  # Reduced width shift range
+            height_shift_range=0.1,  # Reduced height shift range
             horizontal_flip=True
         )
     else:
@@ -189,7 +198,7 @@ X_val, y_val = getXY(val_df)
 # X_val = transform_data(X_val)
 
 X_test, y_test = getXY(test_df)
-# X_test = transform_data(X_test)
+# X_test = transform_data(X_test)j
 
 
 
