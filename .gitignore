@@ -79,7 +79,8 @@ target/
 /data/
 
 # exclude models from source control
-/models/
+/models/checkpoints
+/models/model*
 
 # exclude MLflow run files
 /mlruns/
