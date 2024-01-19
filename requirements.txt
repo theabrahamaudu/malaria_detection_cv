@@ -14,6 +14,7 @@ opencv-python
 tensorflow[and-cuda]==2.15.0
 tensorflow_addons
 attention
+seaborn
 keras-self-attention
 tqdm
 scikit-learn
